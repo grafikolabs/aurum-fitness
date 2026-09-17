@@ -33,7 +33,8 @@ const prefix = mobile ? 'm-' : '';
 if (full) {
   await page.screenshot({ path: `${out}/${prefix}full.png`, fullPage: true });
 } else {
-  const isHome = new URL(url).pathname === '/';
+  // Detect the home page by its content, not its path (a project Pages site lives under a sub-path).
+  const isHome = (await page.$('[data-scene="pillars"]')) !== null;
   const stops = !isHome
     ? await page.evaluate(() => Array.from({ length: Math.min(10, Math.ceil(document.documentElement.scrollHeight / (innerHeight * 0.95))) }, (_, i) => [`step-${i}`, Math.round(i * innerHeight * 0.95)]))
     : await page.evaluate(() => {
